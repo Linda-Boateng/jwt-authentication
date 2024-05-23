@@ -15,8 +15,6 @@ public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
-
-
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(
             @RequestBody RegisterRequest request
@@ -34,7 +32,7 @@ public class AuthenticationController {
 
 
     @PutMapping("/update/{userId}")
-    public ResponseEntity<UpdateResponse> update(@PathVariable("userId") Integer userId, @RequestBody User request){
+    public ResponseEntity<UpdateResponse> update(@PathVariable("userId") Integer userId, @RequestBody UpdateRequest request){
         return ResponseEntity.ok(authenticationService.updateUser(userId,request));
     }
 }

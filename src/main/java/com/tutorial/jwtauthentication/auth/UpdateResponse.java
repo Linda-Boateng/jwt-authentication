@@ -10,7 +10,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateResponse {
-    private String firstname;
-    private String lastname;
-    private String email;
+    private String message;
 }

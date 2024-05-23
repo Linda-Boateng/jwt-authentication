@@ -15,11 +15,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthenticationService {
 
-
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+
     public AuthenticationResponse register(RegisterRequest request) {
         var user = User.builder()
                 .firstname(request.getFirstname())
@@ -29,7 +29,7 @@ public class AuthenticationService {
                 .role(Role.USER)
                 .build();
         userRepository.save(user);
-        var jwtToken = jwtService.generateToken(user);
+        String jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
@@ -43,17 +43,21 @@ public class AuthenticationService {
 
                 )
         );
-        var user = userRepository.findByEmail(request.getEmail())
+        User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow();
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
+                .userId(user.getId())
                 .build();
     }
 
-    public UpdateResponse updateUser(Integer userId, User request) {
-          userRepository.findById(userId).orElseThrow();
-        userRepository.save(request);
-        return UpdateResponse.builder().build();
+    public UpdateResponse updateUser(Integer userId, UpdateRequest request) {
+    User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User Not Found"));
+    user.setEmail(request.getEmail());
+    user.setLastname(request.getLastname());
+    user.setFirstname(request.getFirstname());
+    userRepository.save(user);
+        return UpdateResponse.builder().message("User updated Successfully").build();
     }
 }
